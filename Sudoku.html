@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renewable Energy Sudoku</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(120deg, #a1c4fd, #c2e9fb);
+            color: #333;
+            text-align: center;
+        }
+
+        header {
+            padding: 20px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .container {
+            margin: 20px auto;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .difficulty-selector {
+            margin-bottom: 20px;
+        }
+
+        .difficulty-button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 1em;
+            color: white;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .difficulty-button:hover {
+            background-color: #45a049;
+        }
+
+        .sudoku-grid {
+            display: grid;
+            gap: 2px;
+            margin: auto;
+            border: 2px solid #4CAF50;
+            background-color: #f1f1f1;
+        }
+
+        .sudoku-cell {
+            width: 50px;
+            height: 50px;
+            font-size: 1.5em;
+            text-align: center;
+            background-color: white;
+            border: 1px solid #ddd;
+        }
+
+        .sudoku-cell select {
+            width: 100%;
+            height: 100%;
+            font-size: 1em;
+            text-align: center;
+            border: none;
+            background: none;
+        }
+
+        .sudoku-cell:focus {
+            outline: 2px solid #4CAF50;
+        }
+
+        .celebration {
+            font-size: 1.5em;
+            color: #ff5733;
+            margin-top: 20px;
+        }
+
+        .hint {
+            color: #555;
+            font-size: 0.9em;
+        }
+
+        .qr-code {
+            margin-top: 20px;
+        }
+
+        .qr-code img {
+            width: 150px;
+            height: 150px;
+        }
+    </style>
+</head>
+<body>
+    <header>Renewable Energy Sudoku</header>
+    <div class="container">
+        <div class="difficulty-selector">
+            <button class="difficulty-button" onclick="generateSudoku(4)">Easy (4x4)</button>
+            <button class="difficulty-button" onclick="generateSudoku(6)">Intermediate (6x6)</button>
+            <button class="difficulty-button" onclick="generateSudoku(9)">Hard (9x9)</button>
+        </div>
+        <div id="sudoku-container"></div>
+        <div id="celebration" class="celebration"></div>
+        <div id="hint" class="hint"></div>
+        <div class="qr-code">
+            <p>Scan this QR code to access the Sudoku on your mobile:</p>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?data=https%3A%2F%2Frenewable-sudoku.com&size=150x150" alt="Sudoku QR Code">
+        </div>
+    </div>
+
+    <script>
+        const symbols = ["🌞", "🌱", "💨", "💧", "🔋", "🔆"];
+
+        function generateSudoku(size) {
+            const gridContainer = document.getElementById('sudoku-container');
+            const celebration = document.getElementById('celebration');
+            const hint = document.getElementById('hint');
+
+            gridContainer.innerHTML = '';
+            celebration.textContent = '';
+            hint.textContent = '';
+
+            gridContainer.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+            gridContainer.className = 'sudoku-grid';
+
+            const grid = [];
+            for (let row = 0; row < size; row++) {
+                grid[row] = [];
+                for (let col = 0; col < size; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'sudoku-cell';
+
+                    if (Math.random() < 0.3) {
+                        const randomSymbol = symbols[Math.floor(Math.random() * 5)];
+                        cell.textContent = randomSymbol;
+                    } else {
+                        const select = document.createElement('select');
+                        const emptyOption = document.createElement('option');
+                        emptyOption.value = "";
+                        emptyOption.textContent = "";
+                        select.appendChild(emptyOption);
+
+                        symbols.slice(0, size).forEach(symbol => {
+                            const option = document.createElement('option');
+                            option.value = symbol;
+                            option.textContent = symbol;
+                            select.appendChild(option);
+                        });
+
+                        cell.appendChild(select);
+
+                        select.addEventListener('change', () => {
+                            if (checkWin(grid, size)) {
+                                celebration.textContent = 'Congratulations! You solved the puzzle!';
+                            }
+                        });
+                    }
+
+                    grid[row][col] = cell;
+                    gridContainer.appendChild(cell);
+                }
+            }
+        }
+
+        function checkWin(grid, size) {
+            // Simple win-checking logic here
+            return false; // Placeholder
+        }
+
+        generateSudoku(4); // Default load 4x4 for Easy
+    </script>
+</body>
+</html>
